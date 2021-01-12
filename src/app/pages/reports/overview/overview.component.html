@@ -1,0 +1,138 @@
+<div class="container-fluid">
+  <app-page-title title="Sales" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  <div class="row page-title align-items-center">
+    <div class="col-sm-4 col-xl-6">
+      <h4 class="mb-1 mt-0">Reports</h4>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row page-title align-items-center">
+            <div class="col-md-3 col-xl-4">
+              <h4 class="header-title mt-0 mb-1">All Sales</h4>
+            </div>
+            <div class="col-sm-8 col-xl-8">
+
+              <div class="d-flex justify-content-end">
+                <!-- Agent number -->
+                <div class="form-group mb-sm-0">
+                  <input type="text" class="form-control" id="agentMSISDN" style="min-width: 208px;"
+                    placeholder="26097000000" [(ngModel)]="_agentMSISDN" [ngModelOptions]="{standalone: true}" />
+                  <div [ngClass]="{'d-block': !submit && errors.agentNumber}" *ngIf="!submit && errors.agentNumber"
+                    class="invalid-feedback">
+                    Please enter a valid number.
+                  </div>
+                </div>
+                <a href="javascript:void(0)" class="btn btn-primary mx-2" (click)="viewAgentTransactions(_agentMSISDN)">
+                  <i class="uil uil-user ml-1"></i> By Agent
+                </a>
+                <!-- End agent number -->
+
+                <!-- Filter date -->
+                <div class="form-group mb-sm-0">
+                  <input type="text" class="form-control" id="dashdaterange" style="min-width: 208px;"
+                    placeholder="Start date to end date" mwlFlatpickr [convertModelValue]="true" mode="range"
+                    [(ngModel)]="selectedDateRange" [ngModelOptions]="{standalone: true}" />
+                </div>
+                <a href="javascript:void(0)" class="btn btn-primary ml-2" (click)="export()">
+                  <i class="uil uil-export ml-1"></i> Export
+                </a>
+                <!-- End filter date -->
+              </div>
+
+            </div>
+          </div>
+
+          <p class="text-muted font-13 mb-4">
+
+          </p>
+          <!-- Sort -->
+          <div class="row mb-md-2">
+            <div class="col-sm-12 col-md-6">
+              <div class="dataTables_length" id="tickets-table_length"><label
+                  class="d-inline-flex align-items-center">Show
+                  <select name="tickets-table_length" aria-controls="tickets-table" name="pageSize"
+                    [(ngModel)]="salesReportService.pageSize"
+                    class="custom-select custom-select-sm form-control form-control-sm mx-2">
+                    <option [ngValue]="10">10</option>
+                    <option [ngValue]="25">25</option>
+                    <option [ngValue]="50">50</option>
+                    <option [ngValue]="100">100</option>
+                  </select> entries</label></div>
+            </div>
+            <!-- End sort -->
+
+            <!-- Search -->
+            <div class="col-sm-12 col-md-6">
+              <div id="tickets-table_filter" class="dataTables_filter text-md-right"><label
+                  class="d-inline-flex align-items-center">Search:
+                  <input type="text" name="searchTerm" class="form-control form-control-sm ml-2"
+                    aria-controls="tickets-table" [(ngModel)]="salesReportService.searchTerm"></label></div>
+            </div>
+            <!-- End search -->
+          </div>
+          <!-- Sales table -->
+          <ng-container *ngIf="empty$; else showTable">
+            <div class="d-flex flex-row justify-content-center">
+              <div class="d-flex flex-row align-items-center">
+                <i data-feather="frown" class="icons-lg icon-dual-danger mr-2"></i>
+                <h4 class="h4">No sales yet!</h4>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #showTable>
+            <table id="basic-datatable" class="table datatables dt-responsive nowrap">
+              <thead>
+                <tr>
+                  <th sortable="serviceName" (sort)="onSort($event)">Service</th>
+                  <th sortable="sum_of_transactions" (sort)="onSort($event)">Sum of Sales</th>
+                  <th sortable="sum_of_commission" (sort)="onSort($event)">Total Commission</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr tr *ngFor="let row of sales$">
+                  <td>
+                    <ngb-highlight [result]="row.serviceName" [term]="salesReportService.searchTerm"></ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="row.sum_of_transactions | currency: 'ZMW '"
+                      [term]="salesReportService.searchTerm">
+                    </ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="row.sum_of_commission | currency: 'ZMW '"
+                      [term]="salesReportService.searchTerm">
+                    </ngb-highlight>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- End table -->
+            <div class="row justify-content-md-between align-items-md-center mt-2">
+              <div class="col-sm-12 col-md-5">
+                <div class="dataTables_info mb-2" id="tickets-table_info" role="status" aria-live="polite">Showing
+                  {{salesReportService.startIndex + 1}} to
+                  {{salesReportService.endIndex}} of {{salesReportService.totalRecords}}
+                  entries
+                </div>
+              </div>
+              <!-- Pagination -->
+              <div class="col-sm-12 col-md-5">
+                <div class="text-md-right float-md-right pagination-rounded">
+                  <ngb-pagination [collectionSize]="total$" [(page)]="salesReportService.page"
+                    [pageSize]="salesReportService.pageSize">
+                  </ngb-pagination>
+                </div>
+              </div>
+              <!-- End Pagination -->
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

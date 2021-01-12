@@ -1,0 +1,12 @@
+<!-- Toasts -->
+<app-toasts aria-live="polite" aria-atomic="true"></app-toasts>
+
+<!-- vertical layout -->
+<app-vertical *ngIf="isVerticalLayoutRequested()" [layoutWidth]="layoutWidth" [sidebarTheme]="leftSidebarTheme"
+  [sidebarType]="leftSidebarWidth"></app-vertical>
+
+<!-- horizontal layout -->
+<app-horizontal *ngIf="isHorizontalLayoutRequested()" [layoutWidth]="layoutWidth"></app-horizontal>
+
+<!-- right sidebar-->
+<app-rightsidebar></app-rightsidebar>

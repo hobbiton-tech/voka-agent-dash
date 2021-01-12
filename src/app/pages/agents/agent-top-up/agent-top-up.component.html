@@ -1,0 +1,49 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{title}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form id="topUpAgentForm" name="topUpAgentForm" class="needs-validation" (ngSubmit)="validSubmit()"
+    [formGroup]="topUpAgentForm">
+    <!-- Partner Details -->
+    <h5 class="h5">{{ agent.first_name +" "+ agent.last_name}}</h5>
+    <p>
+      <span class="font-weight-bold">Phone Number </span>
+      {{ agent.MSISDN }}
+    </p>
+    <!-- <p>
+      <span class="font-weight-bold">Email </span> {{ agent.email }}
+    </p> -->
+    <p>
+      <span class="font-weight-bold">Balance </span>
+      {{ agent.balance | currency: 'ZMW ' }}
+    </p>
+    <!-- <p>
+      <span class="font-weight-bold">Admin Balance</span>
+      {{ adminBalance | currency: 'ZMW ' }}
+    </p> -->
+    <!-- End agent details -->
+
+    <!-- Balance top up -->
+    <div class="form-group">
+      <label for="amount">Balance Top Up<span class="text-danger">*</span></label>
+
+      <input type="text" name="amount" formControlName="amount" [placeholder]="agent.balance | number: '1.2-2'"
+        class="form-control" [ngClass]="{'is-invalid': submit && form.amount.errors}">
+      <div *ngIf="submit && form.amount.errors" class="invalid-feedback">
+        <span *ngIf="form.amount.errors.required">Please enter a balance.</span>
+        <span *ngIf="form.amount.errors.pattern">Please enter a balance including the total ngwee.</span>
+      </div>
+    </div>
+    <!-- End balance top up -->
+    <ngb-alert *ngIf="!alert.closed" [dismissible]="false" [type]="alert.type" (close)="closeAlert()">
+      {{ alert.message }}
+    </ngb-alert>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">Cancel</button>
+  <button form="topUpAgentForm" type="submit" class="btn btn-secondary">Top Up Balance</button>
+</div>

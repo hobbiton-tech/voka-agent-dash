@@ -1,0 +1,277 @@
+<div class="container-fluid">
+  <app-page-title title="Agent Transactions" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+  <div class="row">
+    <div class="col-12">
+
+      <!-- All Sales -->
+      <div class="card">
+        <div class="card-body">
+          <div class="row page-title align-items-center">
+            <div class="col-md-3 col-xl-6">
+              <h4 class="header-title mt-0 mb-1">All Sales</h4>
+            </div>
+            <div class="col-sm-8 col-xl-6">
+
+              <div class="d-flex align-items-center justify-content-end">
+                <!-- Filter date -->
+                <div class="form-group mb-sm-0">
+                  <input type="text" class="form-control" id="dashdaterange" style="min-width: 208px;"
+                    placeholder="Start date to end date" mwlFlatpickr [convertModelValue]="true" mode="range"
+                    [(ngModel)]="selectedDateRange" [ngModelOptions]="{standalone: true}" />
+                </div>
+                <a href="javascript:void(0)" class="btn btn-primary ml-2" (click)="exportSales()">
+                  <i class="uil uil-export ml-1"></i> Export
+                </a>
+                <!-- End filter date -->
+
+                <!-- Go back -->
+                <a role="navigation" href="javascript:void(0)" (click)="goBack()" class="btn btn-outline-dark ml-2">
+                  <i class="icon"><span><i data-feather="chevrons-left"></i></span></i>
+                  Go back
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Sort and search -->
+          <div class="row mb-md-2">
+            <!-- Sort -->
+            <div class="col-sm-12 col-md-6">
+              <div class="dataTables_length" id="tickets-table_length"><label
+                  class="d-inline-flex align-items-center">Show
+                  <select name="tickets-table_length" aria-controls="tickets-table" name="pageSize"
+                    [(ngModel)]="salesReportService.pageSize"
+                    class="custom-select custom-select-sm form-control form-control-sm mx-2">
+                    <option [ngValue]="10">10</option>
+                    <option [ngValue]="25">25</option>
+                    <option [ngValue]="50">50</option>
+                    <option [ngValue]="100">100</option>
+                  </select> entries</label></div>
+            </div>
+            <!-- End sort -->
+
+            <!-- Search -->
+            <div class="col-sm-12 col-md-6">
+              <div id="tickets-table_filter" class="dataTables_filter text-md-right"><label
+                  class="d-inline-flex align-items-center">Search:
+                  <input type="text" name="searchTerm" class="form-control form-control-sm ml-2"
+                    aria-controls="tickets-table" [(ngModel)]="salesReportService.searchTerm"></label></div>
+            </div>
+            <!-- End search -->
+          </div>
+          <!-- End sort and search -->
+
+          <!-- Sales table -->
+          <ng-container *ngIf="agentSalesEmpty$; else showSalesTable">
+            <div class="d-flex flex-row justify-content-center">
+              <div class="d-flex flex-row align-items-center">
+                <i data-feather="frown" class="icons-lg icon-dual-danger mr-2"></i>
+                <h4 class="h4">No sales yet!</h4>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #showSalesTable>
+            <table id="basic-datatable" class="table datatables dt-responsive nowrap">
+              <thead>
+                <tr>
+                  <th sortable="serviceName" (sort)="onSort($event)">Service</th>
+                  <th sortable="sum_of_transactions" (sort)="onSort($event)">Sum of Sales</th>
+                  <th sortable="sum_of_commission" (sort)="onSort($event)">Total Commission</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr tr *ngFor="let row of agentSales$">
+                  <td>
+                    <ngb-highlight [result]="row.serviceName" [term]="salesReportService.searchTerm"></ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="row.sum_of_transactions | currency: 'ZMW '"
+                      [term]="salesReportService.searchTerm">
+                    </ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="row.sum_of_commission | currency: 'ZMW '"
+                      [term]="salesReportService.searchTerm">
+                    </ngb-highlight>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- End table -->
+            <div class="row justify-content-md-between align-items-md-center mt-2">
+              <div class="col-sm-12 col-md-5">
+                <div class="dataTables_info mb-2" id="tickets-table_info" role="status" aria-live="polite">Showing
+                  {{salesReportService.startIndex + 1}} to
+                  {{salesReportService.endIndex}} of {{salesReportService.totalRecords}}
+                  entries
+                </div>
+              </div>
+              <!-- Pagination -->
+              <div class="col-sm-12 col-md-5">
+                <div class="text-md-right float-md-right pagination-rounded">
+                  <ngb-pagination [collectionSize]="agentSalesTotal$" [(page)]="salesReportService.page"
+                    [pageSize]="salesReportService.pageSize">
+                  </ngb-pagination>
+                </div>
+              </div>
+              <!-- End Pagination -->
+            </div>
+          </ng-template>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex flex-row justify-content-between align-items-baseline">
+            <ng-container *ngIf="agent$; else defaultHeader">
+              <h4 class="header-title mt-0 mb-1">{{ agent$.first_name+' '+agent$.last_name }}'s
+                Transactions</h4>
+            </ng-container>
+            <ng-template #defaultHeader>
+              <h4 class="header-title mt-0 mb-1">Partner Transactions</h4>
+            </ng-template>
+
+            <div class="d-flex align-items-center">
+              <!-- Filter date -->
+              <div class="form-group mb-sm-0">
+                <input type="text" class="form-control" id="dashdaterange" style="min-width: 208px;"
+                  placeholder="Start date to end date" mwlFlatpickr [convertModelValue]="true" mode="range"
+                  [(ngModel)]="selectedDateRange" [ngModelOptions]="{standalone: true}" />
+              </div>
+              <a href="javascript:void(0)" class="btn btn-primary mx-2" (click)="export()">
+                <i class="uil uil-export ml-1"></i> Export
+              </a>
+              <!-- End filter date -->
+            </div>
+          </div>
+
+          <p class="text-muted font-13 mb-4">
+
+          </p>
+          <!-- Sort -->
+          <div class="row mb-md-2">
+            <div class="col-sm-12 col-md-6">
+              <div class="dataTables_length" id="tickets-table_length"><label
+                  class="d-inline-flex align-items-center">Show
+                  <select name="tickets-table_length" aria-controls="tickets-table" name="pageSize"
+                    [(ngModel)]="transactionsService.pageSize"
+                    class="custom-select custom-select-sm form-control form-control-sm mx-2">
+                    <option [ngValue]="10">10</option>
+                    <option [ngValue]="25">25</option>
+                    <option [ngValue]="50">50</option>
+                    <option [ngValue]="100">100</option>
+                  </select> entries</label></div>
+            </div>
+            <!-- End sort -->
+
+            <!-- Search -->
+            <div class="col-sm-12 col-md-6">
+              <div id="tickets-table_filter" class="dataTables_filter text-md-right"><label
+                  class="d-inline-flex align-items-center">Search:
+                  <input type="text" name="searchTerm" class="form-control form-control-sm ml-2"
+                    aria-controls="tickets-table" [(ngModel)]="transactionsService.searchTerm"></label></div>
+            </div>
+            <!-- End search -->
+          </div>
+          <!-- Transactions table -->
+          <ng-container *ngIf="empty$; else showTable">
+            <div class="d-flex flex-row justify-content-center">
+              <div class="d-flex flex-row align-items-center">
+                <i data-feather="frown" class="icons-lg icon-dual-danger mr-2"></i>
+                <h4 class="h4">No transactions yet!</h4>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #showTable>
+            <table id="basic-datatable" class="table datatables dt-responsive nowrap">
+              <thead>
+                <tr>
+                  <th sortable="id" (sort)="onSort($event)">ID</th>
+                  <th sortable="customer_msisdn" (sort)="onSort($event)">Customer Number</th>
+                  <th sortable="amount" (sort)="onSort($event)">Amount</th>
+                  <th sortable="commission" (sort)="onSort($event)">Commission</th>
+                  <!-- <th sortable="commission" (sort)="onSort($event)">Commission</th> -->
+                  <th sortable="serviceId" (sort)="onSort($event)">Service</th>
+                  <th sortable="status" (sort)="onSort($event)">Status</th>
+                  <th sortable="date_created" (sort)="onSort($event)">Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr tr *ngFor="let row of transactions$">
+                  <td>
+                    <ngb-highlight [result]="row.id" [term]="transactionsService.searchTerm"></ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="row.customer_msisdn" [term]="transactionsService.searchTerm">
+                    </ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="row.transaction_amount | currency: 'ZMW '"
+                      [term]="transactionsService.searchTerm">
+                    </ngb-highlight>
+                  </td>
+                  <!-- <td>
+                    <ngb-highlight [result]="row.commission_amount | currency: 'ZMW '"
+                      [term]="transactionsService.searchTerm">
+                    </ngb-highlight>
+                  </td> -->
+                  <td>
+                    <ngb-highlight [result]="row.commission | currency: 'ZMW '"
+                      [term]="transactionsService.searchTerm">
+                    </ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="row.serviceName" [term]="transactionsService.searchTerm"></ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight class="badge badge-soft-{{ row.statusColor }} badge-pill"
+                      [result]="row.statusText | titlecase" [term]="transactionsService.searchTerm">
+                    </ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="row.transaction_date | date: 'd MMM y, h:mm:ss a': 'CAT'"
+                      [term]="transactionsService.searchTerm">
+                    </ngb-highlight>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-light" (click)="viewTransaction(row)">More Details</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- End table -->
+            <div class="row justify-content-md-between align-items-md-center mt-2">
+              <div class="col-sm-12 col-md-5">
+                <div class="dataTables_info mb-2" id="tickets-table_info" role="status" aria-live="polite">Showing
+                  {{transactionsService.startIndex + 1}} to
+                  {{transactionsService.endIndex}} of {{transactionsService.totalRecords}}
+                  entries
+                </div>
+              </div>
+              <!-- Pagination -->
+              <div class="col-sm-12 col-md-5">
+                <div class="text-md-right float-md-right pagination-rounded">
+                  <ngb-pagination [collectionSize]="total$" [(page)]="transactionsService.page"
+                    [pageSize]="transactionsService.pageSize" [maxSize]="5" [rotate]="true" [ellipses]="false"
+                    [boundaryLinks]="true">
+                  </ngb-pagination>
+                </div>
+              </div>
+              <!-- End Pagination -->
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>

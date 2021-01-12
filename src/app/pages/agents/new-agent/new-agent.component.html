@@ -1,0 +1,116 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{title}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form id="newAgentForm" name="newAgentForm" class="needs-validation" (ngSubmit)="validSubmit()"
+    [formGroup]="newAgentForm">
+    <!-- Agent Details -->
+    <h5 class="h5">Agent's Details</h5>
+    <div class="d-flex flex-row justify-content-between">
+      <!-- Name -->
+      <div class="form-group w-50">
+        <label for="name">First Name<span class="text-danger">*</span></label>
+        <input type="text" name="fisrt_name" formControlName="first_name" placeholder="Agent's fisrt name" class="form-control"
+          [ngClass]="{'is-invalid': form.first_name.touched && form.first_name.errors}">
+        <div *ngIf="form.first_name.errors" class="invalid-feedback">
+          <span *ngIf="form.first_name.errors.required">Please enter a first name.</span>
+        </div>
+      </div>
+      <!-- End first name -->
+      <!-- last Name -->
+      <div class="form-group w-50 ml-4">
+        <label for="name">Last Name<span class="text-danger">*</span></label>
+        <input type="text" name="last_name" formControlName="last_name" placeholder="Agent's last name" class="form-control"
+          [ngClass]="{'is-invalid': form.last_name.touched && form.last_name.errors}">
+        <div *ngIf="form.last_name.errors" class="invalid-feedback">
+          <span *ngIf="form.last_name.errors.required">Please enter a last name.</span>
+        </div>
+      </div>
+      <!-- End first name -->
+    </div>
+    <div class="d-flex flex-row justify-content-between">
+      <!-- Name -->
+      <div class="form-group w-50">
+        <label for="name">NRC<span class="text-danger">*</span></label>
+        <input type="text" name="nrc" formControlName="nrc" placeholder="Agent's NRC number xxxxxx/xx/x" class="form-control"
+          [ngClass]="{'is-invalid': form.nrc.touched && form.nrc.errors}">
+        <div *ngIf="form.nrc.errors" class="invalid-feedback">
+          <span *ngIf="form.nrc.errors.required">Please enter an NRC number.</span>
+          <span *ngIf="form.nrc.errors.pattern">Please enter a valid NRC number.</span>
+        </div>
+      </div>
+      <!-- End first name -->
+      <!-- Phone Number -->
+      <div class="form-group w-50 ml-4">
+        <label for="phone_number">Phone Number<span class="text-danger">*</span></label>
+        <input type="text" name="phone_number" formControlName="phone_number" placeholder="2609xxxxxxxx"
+          class="form-control" [ngClass]="{'is-invalid': form.phone_number.touched &&  form.phone_number.errors}">
+        <div *ngIf="form.phone_number.errors" class="invalid-feedback">
+          <span *ngIf="form.phone_number.errors.required">Please enter a phone number.</span>
+          <span *ngIf="form.phone_number.errors.pattern">Please enter a valid phone number.</span>
+        </div>
+      </div>
+      <!-- End phone number -->
+    </div>
+    <div class="d-flex flex-row justify-content-between">
+      <!-- Name -->
+      <div class="form-group w-50">
+        <label for="name">Location<span class="text-danger">*</span></label>
+        <input type="text" name="location" formControlName="location" placeholder="Agent's location" class="form-control"
+          [ngClass]="{'is-invalid': form.location.touched && form.location.errors}">
+        <div *ngIf="form.location.errors" class="invalid-feedback">
+          <span *ngIf="form.location.errors.required">Please enter a location.</span>
+        </div>
+      </div>
+      <!-- End first name -->
+      <!-- Phone Number -->
+
+      <!-- End phone number -->
+    </div>
+    <!-- <div class="d-flex flex-row justify-content-between">
+
+
+
+      <!-- Email -->
+      <!-- <div class="form-group w-50 ml-4">
+        <label for="email">Email<span class="text-danger">*</span></label>
+        <input type="text" name="email" formControlName="email" placeholder="Agent's email address"
+          class="form-control" [ngClass]="{'is-invalid': submit && form.email.errors}">
+        <div *ngIf="submit && form.email.errors" class="invalid-feedback">
+          <span *ngIf="form.email.errors.required">Please enter an email.</span>
+          <span *ngIf="form.email.errors.pattern">Please enter a valid email.</span>
+        </div>
+      </div> -->
+      <!-- End email
+    </div> -->
+
+    <div class="d-flex flex-row justify-content-between">
+
+    </div>
+
+    <!-- End agent details -->
+    <hr>
+    <!-- Account details -->
+    <h5 class="h5">Account Details</h5>
+    <div class="d-flex flex-row justify-content-between">
+      <!-- Account PIN -->
+      <div class="form-group w-50 ml-4">
+        <label for="agent_pin">Agent Pin<span class="text-danger">*</span></label>
+        <input type="password" name="agent_pin" formControlName="agent_pin" placeholder="Agent's pin"
+          class="form-control" [ngClass]="{'is-invalid': form.agent_pin.touched &&  form.agent_pin.errors}">
+        <div *ngIf="form.agent_pin.errors" class="invalid-feedback">
+          <span *ngIf="form.agent_pin.errors.required">Please enter an Agent pin.</span>
+          <span *ngIf="form.agent_pin.errors.minlength">Pin must be atleast 4 charecters</span>
+        </div>
+      </div>
+      <!-- End account PIN -->
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">Cancel</button>
+  <button form="newAgentForm" type="submit" [disabled]="newAgentForm.invalid" class="btn btn-secondary">Add Agent</button>
+</div>

@@ -1,0 +1,51 @@
+<div class="modal-header">
+  <h4 class="modal-title"><span
+      class="badge badge-soft-{{ transaction.statusColor }} mr-2">{{ transaction.statusText | titlecase }}</span>{{title}}
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="d-flex flex-row justify-content-between">
+    <p class="p-2">
+      <span class="font-weight-bold">Agent MSISDN</span>
+      <br />
+      {{ transaction.agent_msisdn }}
+    </p>
+    <p class="p-2 text-right">
+      <span class="font-weight-bold">Date</span>
+      <br />
+      {{ transaction.date_created | date: 'd MMM y, h:mm:ss a': 'CAT' }}
+    </p>
+  </div>
+  <hr>
+  <div>
+    <p>
+      <span class="font-weight-bold">Customer MSISDN</span> {{ transaction.customer_msisdn }}
+    </p>
+
+    <p>
+      <span class="font-weight-bold">Service</span> {{ transaction.serviceName }}
+    </p>
+
+    <p>
+      <span class="font-weight-bold">Amount</span> {{ transaction.amount | currency: 'ZMW ' }}
+    </p>
+
+    <p>
+      <span class="font-weight-bold">Commission</span> {{ transaction.commission | currency: 'ZMW ' }}
+    </p>
+
+    <!-- <p>
+      <span class="font-weight-bold">Message</span> {{ transaction.message }}
+    </p> -->
+
+    <!-- <p>
+      <span class="font-weight-bold">Commission</span> {{ transaction.commission | number: '1.2-2' | currency: 'ZMW ' }}
+    </p> -->
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+</div>

@@ -1,0 +1,127 @@
+<div class="container-fluid">
+  <app-page-title title="Agents" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex flex-row justify-content-between align-items-baseline">
+            <h4 class="header-title mt-0 mb-1">All Agents</h4>
+
+            <button class="btn btn-success" (click)="addAgent()">
+              <i class="icon"><span><i data-feather="plus"></i></span></i>
+              New Agent
+            </button>
+          </div>
+
+          <p class="text-muted font-13 mb-4">
+
+          </p>
+          <!-- Sort -->
+          <div class="row mb-md-2">
+            <div class="col-sm-12 col-md-6">
+              <div class="dataTables_length" id="tickets-table_length"><label
+                  class="d-inline-flex align-items-center">Show
+                  <select name="tickets-table_length" aria-controls="tickets-table" name="pageSize"
+                    [(ngModel)]="agentsService.pageSize"
+                    class="custom-select custom-select-sm form-control form-control-sm mx-2">
+                    <option [ngValue]="10">10</option>
+                    <option [ngValue]="25">25</option>
+                    <option [ngValue]="50">50</option>
+                    <option [ngValue]="100">100</option>
+                  </select> entries</label></div>
+            </div>
+            <!-- End sort -->
+
+            <!-- Search -->
+            <div class="col-sm-12 col-md-6">
+              <div id="tickets-table_filter" class="dataTables_filter text-md-right"><label
+                  class="d-inline-flex align-items-center">Search:
+                  <input type="text" name="searchTerm" class="form-control form-control-sm ml-2"
+                    aria-controls="tickets-table" [(ngModel)]="agentsService.searchTerm"></label></div>
+            </div>
+            <!-- End search -->
+          </div>
+          <!-- Agents table -->
+          <ng-container *ngIf="empty$; else showTable">
+            <div class="d-flex flex-row justify-content-center">
+              <div class="d-flex flex-row align-items-center">
+                <i data-feather="frown" class="icons-lg icon-dual-danger mr-2"></i>
+                <h4 class="h4">No Agents yet!</h4>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #showTable>
+            <table id="basic-datatable" class="table datatables dt-responsive nowrap">
+              <thead>
+                <tr>
+                  <th sortable="last_name" (sort)="onSort($event)">Name</th>
+                  <th sortable="MSISDN" (sort)="onSort($event)">Number</th>
+                  <th sortable="balance" (sort)="onSort($event)">Balance</th>
+                  <!-- <th sortable="location" (sort)="onSort($event)">Location</th> -->
+                  <th sortable="date_created" (sort)="onSort($event)">Created On</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr tr *ngFor="let row of agents$">
+                  <td>
+                    <div class="d-inline-block align-baseline rounded-circle bg-{{ row.statusColor }} mr-2"
+                      style="width: 10px; height: 10px;"></div>
+                    <ngb-highlight [result]="row.first_name+' '+row.last_name" [term]="agentsService.searchTerm">
+                    </ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="row.MSISDN" [term]="agentsService.searchTerm"></ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="row.balance | currency: 'ZMW '" [term]="agentsService.searchTerm">
+                    </ngb-highlight>
+                  </td>
+                  <!-- <td>
+                    <ngb-highlight [result]="row.location" [term]="agentsService.searchTerm">
+                    </ngb-highlight>
+                  </td> -->
+                  <td>
+                    <ngb-highlight [result]="row.date_created | date: 'd MMM y, h:mm:ss a': 'CAT'"
+                      [term]="agentsService.searchTerm">
+                    </ngb-highlight>
+                  </td>
+                  <td>
+                    <div class="button-list">
+                      <button [routerLink]="[ '/transactions/agent-transactions', row.MSISDN ]" type="button"
+                        class="btn btn-light">Transactions</button>
+                      <button type="button" class="btn btn-light" (click)="viewAgent(row)">Details</button>
+                      <button  type="button" class="btn btn-secondary"
+                        (click)="agentTopUp(row)">Top
+                        Up</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- End table -->
+            <div class=" row justify-content-md-between align-items-md-center mt-2">
+              <div class="col-sm-12 col-md-5">
+                <div class="dataTables_info mb-2" id="tickets-table_info" role="status" aria-live="polite">Showing
+                  {{agentsService.startIndex + 1}} to
+                  {{agentsService.endIndex}} of {{agentsService.totalRecords}}
+                  entries
+                </div>
+              </div>
+              <!-- Pagination -->
+              <div class="col-sm-12 col-md-5">
+                <div class="text-md-right float-md-right pagination-rounded">
+                  <ngb-pagination [collectionSize]="total$" [(page)]="agentsService.page"
+                    [pageSize]="agentsService.pageSize" [maxSize]="5" [rotate]="true" [ellipses]="false"
+                    [boundaryLinks]="true">
+                  </ngb-pagination>
+                </div>
+              </div>
+              <!-- End Pagination -->
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>

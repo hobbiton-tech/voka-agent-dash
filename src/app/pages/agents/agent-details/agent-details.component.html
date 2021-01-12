@@ -1,0 +1,51 @@
+<div class="modal-header">
+  <h4 class="modal-title"><span
+      class="badge badge-soft-{{ agent.statusColor }} mr-2">{{ agent.statusText | titlecase }}</span>{{title}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="d-flex flex-row justify-content-between">
+    <p>
+      <span class="font-weight-bold">Name</span>
+      <br />
+      {{ agent.first_name + " "+ agent.last_name }}
+    </p>
+    <!-- <p class="p-2 text-right">
+        <span class="font-weight-bold">NRC</span>
+        <br>
+        {{ agent.NRC }}
+      </p> -->
+  </div>
+  <!-- <p>
+    <span class="font-weight-bold">Email</span> {{ agent.email }}
+  </p> -->
+  <p>
+    <span class="font-weight-bold">Phone Number</span>
+    {{ agent.MSISDN }}
+  </p>
+  <p>
+    <span class="font-weight-bold">Balance</span>
+    {{ agent.balance | currency: 'ZMW ' }}
+  </p>
+
+  <hr>
+  <div>
+
+    <p>
+      <span class="font-weight-bold">Created on</span> {{ agent.date_created | date: 'd MMM y, h:mm:ss a': 'CAT' }}
+    </p>
+
+  </div>
+</div>
+<div class="modal-footer">
+  <!-- <ng-container *ngIf="agent.isActive === 'true'; else activateAgent">
+    <button type="button" class="btn btn-danger" (click)="suspendCurrentAgent()">Suspend Partner</button>
+  </ng-container> -->
+  <ng-template #activateAgent>
+    <button type="button" class="btn btn-success" (click)="activateCurrentAgent()">Activate Partner</button>
+  </ng-template>
+
+  <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">Close</button>
+</div>
